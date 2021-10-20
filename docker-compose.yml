@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:11.9-alpine
+    container_name: postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: Admin
+      POSTGRES_PASSWORD: halco1002
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - db
+
+  fusionauth:
+    #image: fusionauth-app:latest
+    image: fusionauth/fusionauth-app:1.22.0
+    container_name: fusionauth
+    depends_on:
+      - postgres
+    ports:
+      - "4011:9011"
+    environment:
+      #fusionauth configuration
+      DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
+      DATABASE_ROOT_USERNAME: Admin
+      DATABASE_ROOT_PASSWORD: halco1002
+      DATABASE_USERNAME: Admin
+      DATABASE_PASSWORD: halco1002
+      FUSIONAUTH_APP_HTTP_PORT: 9011
+      FUSIONAUTH_APP_MEMORY: 512M
+      FUSIONAUTH_APP_RUNTIME_MODE: production
+      FUSIONAUTH_APP_URL: http://fusionauth:9011
+      SEARCH_TYPE: database
+
+    networks:
+      - db
+
+    volumes:
+      - fa_config:/usr/local/fusionauth/config
+      - ./kickstart:/kickstart
+    restart: unless-stopped
+
+
+networks:
+  db:
+    #name: fusionauth-network
+    driver: bridge
+
+volumes:
+  db_data:
+  fa_config:
