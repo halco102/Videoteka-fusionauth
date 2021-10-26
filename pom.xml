@@ -51,6 +51,11 @@
 			<version>${fusionauth-java-client.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
 		<!-- Swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>

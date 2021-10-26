@@ -1,0 +1,69 @@
+{
+  "variables": {
+    "apiKey": "#{ENV.FUSIONAUTH_API_KEY}",
+    "adminEmail": "#{ENV.ADMIN_EMAIL}",
+    "adminPassword": "#{ENV.ADMIN_PASSWORD}",
+    "videotekaTenantId": "#{ENV.VIDEOTEKA_TENANT_ID}",
+
+    "videoteka": "#{ENV.VIDEOTEKA_APP_ID}"
+
+  },
+  "apiKeys": [
+    {
+      "key": "#{apiKey}"
+    }
+  ],
+  "requests": [
+    {
+      "method": "POST",
+      "url": "/api/user/registration",
+      "body": {
+        "user": {
+          "email": "#{adminEmail}",
+          "password": "#{adminPassword}",
+          "data": {
+            "Company": "Vaudience"
+          }
+        },
+        "registration": {
+          "applicationId": "#{FUSIONAUTH_APPLICATION_ID}",
+          "roles": [
+            "admin"
+          ]
+        }
+      }
+    },
+        {
+      "method": "POST",
+      "url": "/api/tenant/#{videotekaTenantId}",
+      "body": {
+        "sourceTenantId": "#{FUSIONAUTH_TENANT_ID}",
+        "tenant": {
+          "name": "Videoteka"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/application/#{videoteka}",
+      "tenantId": "#{videotekaTenantId}",
+      "body": {
+        "application": {
+          "name": "Videoteka",
+          "roles": [
+            {
+              "name": "ROLE_USER"
+            },
+            {
+              "name": "ROLE_ADMIN"
+            },
+            {
+              "name": "ROLE_ANONYMOUS"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
+ 

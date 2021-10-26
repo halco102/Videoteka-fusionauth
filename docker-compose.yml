@@ -36,6 +36,13 @@ services:
       FUSIONAUTH_APP_RUNTIME_MODE: production
       FUSIONAUTH_APP_URL: http://fusionauth:9011
       SEARCH_TYPE: database
+      #kickstart
+      FUSIONAUTH_API_KEY: 0a719b72-35b8-465e-90a8-11e921938998
+      ADMIN_EMAIL: admin@email.com
+      ADMIN_PASSWORD: strongPassword123
+      VIDEOTEKA_TENANT_ID: 8c455a41-16cf-4faa-a71d-15aeace75642
+      VIDEOTEKA_APP_ID: 25a872da-bb44-4af8-a43d-e7bcb5351ebc
+      FUSIONAUTH_APP_KICKSTART_FILE: /kickstart/kickstarter.json
 
     networks:
       - db
@@ -44,6 +51,27 @@ services:
       - fa_config:/usr/local/fusionauth/config
       - ./kickstart:/kickstart
     restart: unless-stopped
+    
+    
+    
+  fusionauth-microservice:
+    build: .
+    container_name: fusionauth-microservice
+    ports:
+      - "8085:8085"
+    restart: always
+    environment:
+      server.port: 8085
+      fusionAuth.apiKey: 0a719b72-35b8-465e-90a8-11e921938998
+      fusionAuth.baseUrl: http://fusionauth:9011/
+      
+    depends_on:
+      - fusionauth
+    networks:
+      - db
+      
+    links:
+      - fusionauth
 
 
 networks:
