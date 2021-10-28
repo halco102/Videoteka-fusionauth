@@ -13,8 +13,8 @@ services:
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
-    networks:
-      - db
+#    networks:
+#      - videoteka_network
 
   fusionauth:
     #image: fusionauth-app:latest
@@ -22,8 +22,6 @@ services:
     container_name: fusionauth
     depends_on:
       - postgres
-    ports:
-      - "4011:9011"
     environment:
       #fusionauth configuration
       DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
@@ -44,8 +42,8 @@ services:
       VIDEOTEKA_APP_ID: 25a872da-bb44-4af8-a43d-e7bcb5351ebc
       FUSIONAUTH_APP_KICKSTART_FILE: /kickstart/kickstarter.json
 
-    networks:
-      - db
+#    networks:
+#      - videoteka_network
 
     volumes:
       - fa_config:/usr/local/fusionauth/config
@@ -63,21 +61,20 @@ services:
     environment:
       server.port: 8085
       fusionAuth.apiKey: 0a719b72-35b8-465e-90a8-11e921938998
-      fusionAuth.baseUrl: http://fusionauth:9011/
+      fusionAuth.baseUrl: http://fusionauth:9011
       
     depends_on:
       - fusionauth
-    networks:
-      - db
+#    networks:
+#      - videoteka_network
       
     links:
       - fusionauth
 
-
-networks:
-  db:
-    #name: fusionauth-network
-    driver: bridge
+networks: 
+  default: 
+    external: 
+      name: videoteka_network
 
 volumes:
   db_data:
