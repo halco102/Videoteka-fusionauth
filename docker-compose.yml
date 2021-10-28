@@ -6,15 +6,13 @@ services:
     container_name: postgres
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_USER: Admin
-      POSTGRES_PASSWORD: halco1002
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
     restart: unless-stopped
     volumes:
       - db_data:/var/lib/postgresql/data
-#    networks:
-#      - videoteka_network
 
   fusionauth:
     #image: fusionauth-app:latest
@@ -25,25 +23,22 @@ services:
     environment:
       #fusionauth configuration
       DATABASE_URL: jdbc:postgresql://postgres:5432/fusionauth
-      DATABASE_ROOT_USERNAME: Admin
-      DATABASE_ROOT_PASSWORD: halco1002
-      DATABASE_USERNAME: Admin
-      DATABASE_PASSWORD: halco1002
+      DATABASE_ROOT_USERNAME: ${FA_POSTGRES_USER}
+      DATABASE_ROOT_PASSWORD: ${FA_POSTGRES_PASSWORD}
+      DATABASE_USERNAME: ${FA_DATABASE_USER}
+      DATABASE_PASSWORD: ${FA_DATABASE_PASSWORD}
       FUSIONAUTH_APP_HTTP_PORT: 9011
       FUSIONAUTH_APP_MEMORY: 512M
       FUSIONAUTH_APP_RUNTIME_MODE: production
       FUSIONAUTH_APP_URL: http://fusionauth:9011
       SEARCH_TYPE: database
       #kickstart
-      FUSIONAUTH_API_KEY: 0a719b72-35b8-465e-90a8-11e921938998
-      ADMIN_EMAIL: admin@email.com
-      ADMIN_PASSWORD: strongPassword123
-      VIDEOTEKA_TENANT_ID: 8c455a41-16cf-4faa-a71d-15aeace75642
-      VIDEOTEKA_APP_ID: 25a872da-bb44-4af8-a43d-e7bcb5351ebc
+      FUSIONAUTH_API_KEY: ${FA_API_KEY}
+      ADMIN_EMAIL: ${FA_ADMIN_ACCOUNT}
+      ADMIN_PASSWORD: ${FA_ADMIN_PASSWORD}
+      VIDEOTEKA_TENANT_ID: ${FA_VIDEOTEKA_TENANT_ID}
+      VIDEOTEKA_APP_ID: ${FA_VIDEOTEKA_APP_ID}
       FUSIONAUTH_APP_KICKSTART_FILE: /kickstart/kickstarter.json
-
-#    networks:
-#      - videoteka_network
 
     volumes:
       - fa_config:/usr/local/fusionauth/config
@@ -60,13 +55,12 @@ services:
     restart: always
     environment:
       server.port: 8085
-      fusionAuth.apiKey: 0a719b72-35b8-465e-90a8-11e921938998
+      fusionAuth.apiKey: ${FA_API_KEY}
       fusionAuth.baseUrl: http://fusionauth:9011
+      appId: ${FA_VIDEOTEKA_APP_ID}
       
     depends_on:
       - fusionauth
-#    networks:
-#      - videoteka_network
       
     links:
       - fusionauth
